@@ -2,13 +2,9 @@ import {
   CameraView,
   CameraType,
   useCameraPermissions,
-  Camera,
-  CameraViewRef,
-  CameraProps,
-  CameraPictureOptions,
 } from "expo-camera";
 import * as MediaLibrary from "expo-media-library";
-import { useRef, useState, createRef } from "react";
+import { useRef, useState } from "react";
 import { Button, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 export default function App() {
@@ -19,12 +15,10 @@ export default function App() {
   const [photo, setPhoto] = useState<string | null>();
 
   if (!permission) {
-    // Camera permissions are still loading.
     return <View />;
   }
 
   if (!permission.granted) {
-    // Camera permissions are not granted yet.
     return (
       <View style={styles.container}>
         <Text style={styles.message}>
@@ -48,7 +42,6 @@ export default function App() {
 
         if (data?.uri) {
           console.log('photo is a string', photo);
-          // Save the photo to the device's photo library
           MediaLibrary.saveToLibraryAsync(data?.uri)
           .then(() => console.log("Photo saved to library"))
           .catch((error) => console.error("Error saving photo to library: ", error));
