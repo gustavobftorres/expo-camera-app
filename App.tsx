@@ -1,6 +1,6 @@
 import { CameraView, CameraType, useCameraPermissions } from "expo-camera";
 import * as MediaLibrary from "expo-media-library";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   Button,
   SafeAreaView,
@@ -15,8 +15,15 @@ export default function App() {
   const camera = useRef<CameraView>(null);
   const [facing, setFacing] = useState<CameraType>("back");
   const [permission, requestPermission] = useCameraPermissions();
+  const [mediaPermission, requestMediaPermission] = MediaLibrary.usePermissions();
   const [isCameraReady, setIsCameraReady] = useState(false);
   const [photo, setPhoto] = useState<string | null>();
+
+  useEffect(() => {
+    if (!mediaPermission?.granted) {
+      requestMediaPermission();
+    }
+  }, [mediaPermission]);
 
   if (!permission) {
     return <View />;
@@ -32,6 +39,7 @@ export default function App() {
       </View>
     );
   }
+
 
   function toggleCameraFacing() {
     setFacing((current) => (current === "back" ? "front" : "back"));
