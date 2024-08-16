@@ -46,14 +46,12 @@ export default function App() {
   }
 
   function takePicture() {
-    console.log("takePicture");
     camera.current?.takePictureAsync().then((data) => {
       setPhoto(data?.uri);
       console.log("Picture taken: ", data?.uri);
 
       if (data?.uri) {
 
-        console.log("photo is a string", photo);
         MediaLibrary.saveToLibraryAsync(data?.uri)
           .then(() => Alert.alert('Sucesso', 'Sua foto foi salva na galeria', [
             {text: 'OK', onPress: () => console.log('OK Pressed')},
@@ -72,7 +70,6 @@ export default function App() {
         facing={facing}
         ref={camera}
         onCameraReady={() => {
-          console.log("Camera is ready");
           setIsCameraReady(true);
         }}
       >
