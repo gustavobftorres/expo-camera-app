@@ -1,11 +1,15 @@
-import {
-  CameraView,
-  CameraType,
-  useCameraPermissions,
-} from "expo-camera";
+import { CameraView, CameraType, useCameraPermissions } from "expo-camera";
 import * as MediaLibrary from "expo-media-library";
 import { useRef, useState } from "react";
-import { Button, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import {
+  Button,
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+  Alert,
+} from "react-native";
 
 export default function App() {
   const camera = useRef<CameraView>(null);
@@ -35,28 +39,35 @@ export default function App() {
 
   function takePicture() {
     console.log("takePicture");
-    camera.current?.takePictureAsync()
-    .then((data) => {
-        setPhoto(data?.uri)
-        console.log("Picture taken: ", data?.uri);
+    camera.current?.takePictureAsync().then((data) => {
+      setPhoto(data?.uri);
+      console.log("Picture taken: ", data?.uri);
 
-        if (data?.uri) {
-          console.log('photo is a string', photo);
-          MediaLibrary.saveToLibraryAsync(data?.uri)
-          .then(() => console.log("Photo saved to library"))
-          .catch((error) => console.error("Error saving photo to library: ", error));
+      if (data?.uri) {
+
+        console.log("photo is a string", photo);
+        MediaLibrary.saveToLibraryAsync(data?.uri)
+          .then(() => Alert.alert('Sucesso', 'Sua foto foi salva na galeria', [
+            {text: 'OK', onPress: () => console.log('OK Pressed')},
+          ]))
+          .catch((error) =>
+            console.error("Error saving photo to library: ", error)
+          );
       }
-      })
-
-
-}
+    });
+  }
 
   return (
     <View style={styles.container}>
-      <CameraView style={styles.camera} facing={facing} ref={camera} onCameraReady={() => {
-        console.log("Camera is ready");
-        setIsCameraReady(true);
-      }}>
+      <CameraView
+        style={styles.camera}
+        facing={facing}
+        ref={camera}
+        onCameraReady={() => {
+          console.log("Camera is ready");
+          setIsCameraReady(true);
+        }}
+      >
         <View style={styles.buttonContainer}>
           <TouchableOpacity style={styles.button} onPress={toggleCameraFacing}>
             <Text style={styles.text}>Flip Camera</Text>
@@ -69,7 +80,6 @@ export default function App() {
     </View>
   );
 }
-
 
 const styles = StyleSheet.create({
   container: {
